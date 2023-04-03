@@ -16,6 +16,6 @@ exports.seed = async function(knex) {
     {title: "Coco"},
     {title: "Soul"},
     {title: "Baby Driver"},
-    {title: "Raiders oof the Lost Ark"},
+    {title: "Raiders of the Lost Ark"},
   ]);
 };
