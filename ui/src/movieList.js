@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 export default function MovieList() {
   const [movies, setMovies] = useState([]);
   const [fetchTime, setFetchTime] = useState(false);
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     setFetchTime(false)
@@ -14,9 +15,9 @@ export default function MovieList() {
     })
   }, [fetchTime]);
 
-  const searchMovies = (query) => {
-    setMovies(movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase())))
-  }
+  // const searchMovies = (query) => {
+  //   setMovies(movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase())))
+  // }
 
   const addMovie = (movieTitle) => {
     let movieObj = {title: movieTitle}
@@ -55,24 +56,49 @@ export default function MovieList() {
     .then(() => setFetchTime(true))
   }
 
+  const setWatchList = (movieId) => {
+    let movieObj = {id: movieId}
+    fetch('http://localhost:8080/watchlist', {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(movieObj)
+    })
+    .then(() => setFetchTime(true))
+  }
+
   return (
     <>
-      <form onSubmit={(e) => {e.preventDefault(); searchMovies(e.target[0].value)}}>
-        <input type="text" placeholder="Search by title"/>
-        <input type="submit" placeholder="Submit"/>
-      </form>
+      <input type="text" placeholder="Search by title" onChange={(e) => setQuery(e.target.value)}/>
+
       <form onSubmit={(e) => {e.preventDefault(); addMovie(e.target[0].value)}}>
         <input type="text" placeholder="Movie Title"/>
         <input type="submit" placeholder="Add to Database"/>
       </form>
+
+      <h3>Movies</h3>
       <ul>
-        {movies.map((e) => {
-          return (
-            <li key={e.id}>
-              {e.title} 
-              <button onClick={() => {deleteMovie(e.id)}}>Delete</button>
-              <button onClick={() => {setWatched(e.id)}}>{e.watched ? "Remove from Watched" : "Add to Watched"}</button>
-            </li>)
+        {movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase()) && !e.watchList).map((e) => {
+            return (
+              <li key={e.id}>
+                {e.title} 
+                <button onClick={() => {deleteMovie(e.id)}}>Delete</button>
+                <button onClick={() => {setWatched(e.id)}}>{e.watched ? "Remove from Watched" : "Add to Watched"}</button>
+                <button onClick={() => {setWatchList(e.id)}}>Add to WatchList</button>
+              </li>)
+        })}
+      </ul>
+      <h3>WatchList Movies</h3>
+      <ul>
+      {movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase()) && e.watchList).map((e) => {
+            return (
+              <li key={e.id}>
+                {e.title} 
+                <button onClick={() => {deleteMovie(e.id)}}>Delete</button>
+                <button onClick={() => {setWatched(e.id)}}>{e.watched ? "Remove from Watched" : "Add to Watched"}</button>
+                <button onClick={() => {setWatchList(e.id)}}>Remove from WatchList</button>
+              </li>)
         })}
       </ul>
     </>

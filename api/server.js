@@ -46,6 +46,14 @@ app.patch('/', (req, res) => {
     .catch(err => res.status(404).json(err))
 })
 
+app.patch('/watchlist', (req, res) => {
+  let id = req.body.id
+  knex("movies").where("id", id)
+    .update({ watchList: knex.raw('NOT ??',  ['watchList']) })
+    .then(data => res.status(200).send(`Updated watch list status for movie with id: ${id}`))
+    .catch(err => res.status(404).json(err))
+})
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })

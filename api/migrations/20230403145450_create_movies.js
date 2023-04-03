@@ -7,6 +7,7 @@ exports.up = function(knex) {
     table.increments('id')
     table.string('title').notNullable();
     table.boolean('watched').defaultTo(false)
+    table.boolean('watchList').defaultTo(false)
   })
 };
 
