@@ -9,11 +9,21 @@ export default function MovieList() {
     .then(data => setMovies(data))
   }, []);
 
+  const searchMovies = (query) => {
+    setMovies(movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase())))
+  }
+
   return (
-    <ul>
-      {movies.map((e) => {
-        return <li>{e.title}</li>;
-      })}
-    </ul>
+    <>
+      <form onSubmit={(e) => {e.preventDefault(); searchMovies(e.target[0].value)}}>
+        <input type="text" placeholder="Search by title"/>
+        <input type="submit" placeholder="Submit"/>
+      </form>
+      <ul>
+        {movies.map((e) => {
+          return <li>{e.title}</li>;
+        })}
+      </ul>
+    </>
   );
 }
