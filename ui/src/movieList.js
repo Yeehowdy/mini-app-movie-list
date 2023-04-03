@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 export default function MovieList() {
   const [movies, setMovies] = useState([]);
   const [fetchTime, setFetchTime] = useState(false);
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState('');
+  const [selectedMovie, setSelectedMovie] = useState();
 
   useEffect(() => {
     setFetchTime(false)
@@ -82,8 +83,8 @@ export default function MovieList() {
         {movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase()) && !e.watchList).map((e) => {
             return (
               <li key={e.id}>
-                {e.title} 
                 <button onClick={() => {deleteMovie(e.id)}}>Delete</button>
+                {e.title} 
                 <button onClick={() => {setWatched(e.id)}}>{e.watched ? "Remove from Watched" : "Add to Watched"}</button>
                 <button onClick={() => {setWatchList(e.id)}}>Add to WatchList</button>
               </li>)
@@ -94,13 +95,18 @@ export default function MovieList() {
       {movies.filter(e => e.title.toLowerCase().includes(query.toLowerCase()) && e.watchList).map((e) => {
             return (
               <li key={e.id}>
-                {e.title} 
                 <button onClick={() => {deleteMovie(e.id)}}>Delete</button>
+                {e.title} 
                 <button onClick={() => {setWatched(e.id)}}>{e.watched ? "Remove from Watched" : "Add to Watched"}</button>
                 <button onClick={() => {setWatchList(e.id)}}>Remove from WatchList</button>
               </li>)
         })}
       </ul>
+      
+      <div className="Movie details">
+        
+      </div>
+
     </>
   );
 }
