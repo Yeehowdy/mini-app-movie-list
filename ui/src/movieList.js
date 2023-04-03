@@ -6,10 +6,12 @@ export default function MovieList() {
 
   useEffect(() => {
     setFetchTime(false)
-    console.log('Effect triggered')
     fetch('http://localhost:8080')
     .then(res => res.json())
-    .then(data => setMovies(data))
+    .then(data => {
+      data.sort((a,b) => a.id - b.id)
+      setMovies(data)
+    })
   }, [fetchTime]);
 
   const searchMovies = (query) => {
@@ -41,6 +43,18 @@ export default function MovieList() {
     .then(() => setFetchTime(true))
   }
 
+  const setWatched = (movieId) => {
+    let movieObj = {id: movieId}
+    fetch('http://localhost:8080', {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(movieObj)
+    })
+    .then(() => setFetchTime(true))
+  }
+
   return (
     <>
       <form onSubmit={(e) => {e.preventDefault(); searchMovies(e.target[0].value)}}>
@@ -53,7 +67,12 @@ export default function MovieList() {
       </form>
       <ul>
         {movies.map((e) => {
-          return <li key={e.id}>{e.title} <button onClick={() => {deleteMovie(e.id)}}>X</button></li>;
+          return (
+            <li key={e.id}>
+              {e.title} 
+              <button onClick={() => {deleteMovie(e.id)}}>Delete</button>
+              <button onClick={() => {setWatched(e.id)}}>{e.watched ? "Remove from Watched" : "Add to Watched"}</button>
+            </li>)
         })}
       </ul>
     </>

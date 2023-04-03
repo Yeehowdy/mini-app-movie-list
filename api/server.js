@@ -32,10 +32,17 @@ app.post('/', (req, res) => {
 
 app.delete('/', (req, res) => {
   let id = req.body.id
-  console.log(id)
   knex("movies").where("id", id)
     .del()
     .then(data => res.status(200).send(`Deleted movie with id: ${id}`))
+    .catch(err => res.status(404).json(err))
+})
+
+app.patch('/', (req, res) => {
+  let id = req.body.id
+  knex("movies").where("id", id)
+    .update({ watched: knex.raw('NOT ??',  ['watched']) })
+    .then(data => res.status(200).send(`Updated watched status for movie with id: ${id}`))
     .catch(err => res.status(404).json(err))
 })
 
